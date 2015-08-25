@@ -4,13 +4,26 @@
 import py_etherpad
 import unittest
 
+import settings
+from datetime import datetime
+import time
+
 
 class TestEtherpadLiteClient(unittest.TestCase):
     """Class to test EtherpadLiteClient."""
 
     def setUp(self):
         """Assign a shared EtherpadLiteClient instance to self."""
-        self.ep_client = py_etherpad.EtherpadLiteClient()
+        self.ep_client = py_etherpad.EtherpadLiteClient(apiKey=settings.APIKEY, baseUrl=settings.BASEURL)
+
+    def tearDown(self):
+        """
+        delete pads created during testing
+        """
+        try:
+            self.ep_client.deletePad('testpad')
+        except ValueError:
+            pass
 
     def testCreateLargePad(self):
         """Initialize a pad with a large body of text, and remove the pad if that succeeds."""
@@ -35,6 +48,20 @@ class TestEtherpadLiteClient(unittest.TestCase):
         print(self.ep_client.deletePad('htmlpad'))
 
 
-if __name__ == "__main__":
+    def testLastUpdated(self):
+
+        start = datetime.now()
+        self.ep_client.createPad('testpad', "hi")
+        time.sleep(5)
+        self.ep_client.setText('testpad', "I'm updated")
+        end = datetime.now()
+
+        updated_at = self.ep_client.getLastEdited('testpad')
+        self.assertLess(updated_at, end)
+        self.assertLess(start, updated_at)
+        self.assertLess(start, end)
+
+
+if __name__ ==  "__main__":
     # import sys;sys.argv = ['', 'Test.testCreateLargePad']
     unittest.main()

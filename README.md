@@ -1,10 +1,14 @@
 This python api enables easy interaction with the Etherpad Lite API.  Etherpad Lite is a collaborative editor provided by the Etherpad Foundation.  http://etherpad.org
+This version is a fork of https://github.com/devjones/PyEtherpadLite 
+The main changes are to be able to use python types, eg. True and False instead of "true" and "false"
+
+THIS IS NOT COMPATIBLE with the original because of the type changes.
 
 #1 Installation
 
 To install py_etherpad using PIP, add the following line to your requirements.txt file:
 
-    -e git+git://github.com/devjones/PyEtherpadLite.git#egg=PyEtherpadLite
+    -e git+git://github.com/phoebebright/PyEtherpadLite.git#egg=PyEtherpadLite
 
 #2 Preparation
 
@@ -34,3 +38,12 @@ Apache License
 
 #6 Credit
 This python client was inspired by TomNomNom's php client which can be found at: https://github.com/TomNomNom/etherpad-lite-client
+
+
+#7 Understanding
+
+If you want public pads, life is easy.
+Just allocate an id to your pad, it can be numeric or character (avoid # I think?)
+Then use the api to get and set values.
+
+If you want limit who can edit, then you are into setting up groups and authors and life becomes a bit more complicated.

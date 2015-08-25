@@ -1,0 +1,2 @@
+APIKEY = "2b110ceed76b44f46132cf50266ca3d631853b911547c83ce1d858de6a2873ac"
+BASEURL = "http://localhost:9001/api"

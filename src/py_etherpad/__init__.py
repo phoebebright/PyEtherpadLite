@@ -2,6 +2,7 @@
 """Module to talk to EtherpadLite API."""
 
 import json
+from datetime import datetime
 try:
     import urllib.parse as urllib_parse
     import urllib.error as urllib_error
@@ -238,10 +239,19 @@ class EtherpadLiteClient:
         })
 
     def getLastEdited(self, padID):
-        """returns the time the pad was last edited as a Unix timestamp"""
+        """returns the time the pad was last edited as a timestamp"""
         return self.call("getLastEdited", {
             "padID": padID
         })
+
+
+    def getLastEditedDateTime(self, padID):
+        """returns the time the pad was last edited as a datetime"""
+        result = self.call("getLastEdited", {
+            "padID": padID
+        })
+        result['lastEdited'] = datetime.fromtimestamp(result['lastEdited'] / 1e3)
+        return result
 
     def deletePad(self, padID):
         """deletes a pad"""
@@ -262,10 +272,20 @@ class EtherpadLiteClient:
         })
 
     def setPublicStatus(self, padID, publicStatus):
-        """sets a boolean for the public status of a pad"""
+        """sets a boolean for the public status of a pad
+        publicStatus can be "true" or "false" or True or False
+        """
+
+        if publicStatus == "true" or publicStatus == "false":
+            status = publicStatus
+        elif publicStatus:
+            status = "true"
+        else:
+            status = "false"
+
         return self.call("setPublicStatus", {
             "padID": padID,
-            "publicStatus": publicStatus
+            "publicStatus": status
         })
 
     def getPublicStatus(self, padID):
@@ -273,6 +293,13 @@ class EtherpadLiteClient:
         return self.call("getPublicStatus", {
             "padID": padID
         })
+
+    def isPublic(self, padID):
+        """returns True or False as boolean python types """
+        result = self.call("getPublicStatus", {
+            "padID": padID
+        })
+        return result['publicStatus'] == "true"
 
     def setPassword(self, padID, password):
         """returns ok or a error message"""
