@@ -39,8 +39,11 @@ Apache License
 #6 Credit
 This python client was inspired by TomNomNom's php client which can be found at: https://github.com/TomNomNom/etherpad-lite-client
 
+#7 Testing
 
-#7 Understanding
+Change the API and URL in settings.py in the test directory before running tests.
+
+#8 Understanding
 
 If you want public pads, life is easy.
 Just allocate an id to your pad, it can be numeric or character (avoid # I think?)

@@ -183,20 +183,23 @@ class EtherpadLiteClient:
     # PAD CONTENT
     # Pad content can be updated and retrieved through the API
 
-    def getText(self, padID, rev=None):
-        """returns the text of a pad"""
-        params = {"padID": padID}
-        if rev is not None:
-            params['rev'] = rev
-        return self.call("getText", params)
 
-    # introduced with pull request merge
-    def getHtml(self, padID, rev=None):
-        """returns the html of a pad"""
+    def getText(self, padID, rev=None):
+        """returns the text of a pad, optionally specifying revision"""
         params = {"padID": padID}
         if rev is not None:
             params['rev'] = rev
-        return self.call("getHTML", params)
+        result =  self.call("getText", params)
+        return result['text']
+
+
+    def getHtml(self, padID, rev=None):
+        """returns the html of a pad , optionally specifying revision"""
+        params = {"padID": padID}
+        if rev is not None:
+            params['rev'] = rev
+        result = self.call("getHTML", params)
+        return result['html']
 
     def setText(self, padID, text):
         """sets the text of a pad"""
@@ -239,25 +242,20 @@ class EtherpadLiteClient:
         })
 
     def getLastEdited(self, padID):
-        """returns the time the pad was last edited as a timestamp"""
-        return self.call("getLastEdited", {
+        """returns the time the pad was last edited as a timestamp that can be compared to time.mktime()"""
+        result =  self.call("getLastEdited", {
             "padID": padID
         })
 
-
-    def getLastEditedDateTime(self, padID):
-        """returns the time the pad was last edited as a datetime"""
-        result = self.call("getLastEdited", {
-            "padID": padID
-        })
-        result['lastEdited'] = datetime.fromtimestamp(result['lastEdited'] / 1e3)
-        return result
+        return result['lastEdited'] / 1e3
 
     def deletePad(self, padID):
-        """deletes a pad"""
-        return self.call("deletePad", {
+        """deletes a pad """
+
+        self.call("deletePad", {
             "padID": padID
         })
+
 
     def getReadOnlyID(self, padID):
         """returns the read only link of a pad"""
@@ -273,20 +271,19 @@ class EtherpadLiteClient:
 
     def setPublicStatus(self, padID, publicStatus):
         """sets a boolean for the public status of a pad
-        publicStatus can be "true" or "false" or True or False
+        publicStatus can be python True or False
         """
 
-        if publicStatus == "true" or publicStatus == "false":
-            status = publicStatus
-        elif publicStatus:
+        if publicStatus:
             status = "true"
         else:
             status = "false"
 
-        return self.call("setPublicStatus", {
+        result =  self.call("setPublicStatus", {
             "padID": padID,
             "publicStatus": status
         })
+        return result
 
     def getPublicStatus(self, padID):
         """return true of false"""
@@ -313,3 +310,4 @@ class EtherpadLiteClient:
         return self.call("isPasswordProtected", {
             "padID": padID
         })
+
